@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "ConnectHandler.h"
 
@@ -19,20 +20,17 @@ using namespace std;
 /* How many pending connections will be hold */
 const int backlog = 10;
 
-/* Listening flag */
-static int listening = 1;
-
-void ctrl_c(int dummy) {
-	/* Set listening flag to zero */
-	listening = 0;
-}
-
-int main(int argv, char** argc){
+int main(int argc, char** argv){
 
 	/* Check the arguments */
+	if(argc < 2) {
+		/* Print usage */
+		cout << "[#] Usage: " << argv[0] << " <listen_port> " << endl;
+		exit(1);
+	}
 
 	/* Listening port */
-    int host_port= 8080;
+    int host_port= atoi(argv[1]);
 
     /* Local listening socket */
     int local_sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -80,7 +78,7 @@ int main(int argv, char** argc){
     pthread_mutex_init(&HostInfo::mutex, NULL);
 
     /* Now lets do the server stuff */
-    while(listening){
+    while(true) {
 
         cout << "[#] Waiting for a connection..." << endl;
 
@@ -119,11 +117,5 @@ int main(int argv, char** argc){
             perror("[@] Error accepting connection: ");
 
     }
-
-    /* Destroy mutex variable */
-    pthread_mutex_destroy(&HostInfo::mutex);
-
-    /* Close local socket descriptor */
-    close(local_sock);
 
 }
