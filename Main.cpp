@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
+#include <getopt.h>
 
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -21,17 +22,78 @@ using namespace std;
 /* How many pending connections will be hold */
 const int backlog = 10;
 
+/* Some constant */
+const int noargument = 0;
+const int requiredargument = 1;
+
+static void print_usage (ostream& stream, const string& program_name, int exit_code) {
+	stream << "Usage: " << program_name << " -p <port> [-a <ip>]" << endl;
+	stream << "  -a  --allow <ip>   Allow the IPs to send data to the server" << endl;
+	stream << "  -p  --port  <port> Listening port" << endl;
+	stream << "Examples: " << endl;
+	stream << program_name << " -p 1234 " << endl;
+	stream << program_name << " -p 1234 -a 192.168.1.1-8 " << endl;
+	stream << program_name << " -p 1234 -a 192.168.1.* " << endl;
+	stream << program_name << " -p 1234 -a 192.168.1.1,192.168.1.4,192.168.1.19 " << endl;
+	exit (exit_code);
+}
+
 int main(int argc, char** argv){
-
-	/* Check the arguments */
-	if(argc < 2) {
-		/* Print usage */
-		cout << "[#] Usage: " << argv[0] << " <listen_port> " << endl;
-		exit(1);
-	}
-
+	/* Flag is 1 if the listening port is set */
+	int listen_port = 0;
 	/* Listening port */
-    int host_port= atoi(argv[1]);
+    int host_port;
+    /* Allowed IP addresses */
+    string ip_allowed = "All";
+    /* Get the program name */
+    string program_name = string(argv[0]);
+
+    while (1) {
+		static struct option long_options[] =
+		  {
+			/* These options don't set a flag.
+			   We distinguish them by their indices. */
+			{"allow",   requiredargument, 0, 'a'},
+			{"port",    requiredargument, 0, 'p'},
+			{0, 0, 0, 0}
+		  };
+
+		/* Getopt_long stores the option index here. */
+		int option_index = 0;
+
+		int c = getopt_long (argc, argv, "a:p:",
+							 long_options, &option_index);
+
+		/* Detect the end of the options. */
+		if (c == -1)
+		  break;
+
+		switch (c) {
+
+		  case 'a':
+			ip_allowed = string(optarg);
+			break;
+
+		  case 'p':
+		    host_port=atoi(optarg);
+		    listen_port = 1;
+			break;
+
+		  default:
+			print_usage(cerr,program_name,1);
+			break;
+		  }
+      }
+
+    if(!listen_port) {
+    	cerr << "[@] ERROR: Missing port number" << endl;
+		print_usage(cerr,program_name,1);
+    }
+
+    /* Print some general information */
+    cout << "[%] SIMPLE ECHO SERVER" << endl;
+    cout << "[%] Listening on port : " << listen_port << endl;
+    cout << "[%] Set of allowed IPs : " << ip_allowed << endl;
 
     /* Local listening socket */
     int local_sock = socket(AF_INET, SOCK_STREAM, 0);
