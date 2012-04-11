@@ -25,6 +25,11 @@ void* ConnectHandler(void* thread_arg) {
     /* Count of bytes send */
     int sendcount;
 
+    /* Additional */
+    string info = local_info + "->" + remote_info + ":";
+    /* History of commands */
+    string history = "";
+
     while(1) {
 
 		/* Set the buffer to zero */
@@ -45,10 +50,12 @@ void* ConnectHandler(void* thread_arg) {
 			return 0;
 		}
 
-		/* Data to send */
-		string data(buffer);
+		/* Data received */
+		string data_rcv = string(buffer);
 		/* Put extra information */
-		data = local_info + "->" + remote_info + ":" + data;
+		string data = info + history + "/" + data_rcv;
+		history += "/" + data_rcv.substr(0,data_rcv.length() - 1);
+
 		/* Send the data back to the client */
 		if((sendcount = send(remote_sock, data.c_str(), data.size(), 0))== -1){
 			string message = "[@] Error sending data to client " + remote_info;
