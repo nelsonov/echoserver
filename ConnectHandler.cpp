@@ -62,10 +62,3 @@ void* ConnectHandler(void* thread_arg) {
 
     return 0;
 }
-
-HostInfo::~HostInfo() {
-	/* Remove the connection information from the static map */
-	pthread_mutex_lock(&mutex);
-	connections.erase(remote_info);
-	pthread_mutex_unlock(&mutex);
-}

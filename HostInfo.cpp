@@ -43,4 +43,10 @@ HostInfo::HostInfo(int remote_sock, const string& remote_ip_address, unsigned sh
 	pthread_mutex_unlock(&mutex);
 }
 
+HostInfo::~HostInfo() {
+	/* Remove the connection information from the static map */
+	pthread_mutex_lock(&mutex);
+	connections.erase(remote_info);
+	pthread_mutex_unlock(&mutex);
+}
 

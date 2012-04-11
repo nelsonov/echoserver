@@ -3,20 +3,12 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <map>
 #include <cstring>
+#include <cstdio>
 #include <cstdlib>
 #include <cerrno>
 
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <resolv.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/poll.h>
 
 #include "HostInfo.h"
 
