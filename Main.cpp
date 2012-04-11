@@ -104,12 +104,12 @@ int main(int argc, char** argv){
 
             /* New host info structure */
             HostInfo *host_info = new HostInfo(remote_sock, remote_ip_address, remote_port, local_ip_address, local_port);
-
             /* Cast to void */
             void* thread_arg = static_cast<void*>(host_info);
 
             /* Spawn thread */
             pthread_create(&thread_id, 0, &ConnectHandler, thread_arg);
+
             /* Detach thread */
             pthread_detach(thread_id);
         }
