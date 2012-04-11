@@ -1,10 +1,3 @@
-/*
- * HostInfo.h
- *
- *  Created on: Apr 11, 2012
- *      Author: larry
- */
-
 #ifndef HOSTINFO_H_
 #define HOSTINFO_H_
 

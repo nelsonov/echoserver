@@ -1,9 +1,3 @@
-/*
- * HostInfo.cpp
- *
- *  Created on: Apr 11, 2012
- *      Author: larry
- */
 #include "HostInfo.h"
 
 using namespace std;

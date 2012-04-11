@@ -14,6 +14,7 @@
 #include <signal.h>
 
 #include "ConnectHandler.h"
+#include "StdinHandler.h"
 
 using namespace std;
 
@@ -76,6 +77,10 @@ int main(int argc, char** argv){
 
     /* Initialize mutex variable */
     pthread_mutex_init(&HostInfo::mutex, NULL);
+
+    /* Spawn thread for handle stdin events */
+    pthread_t thread_stdin;
+    pthread_create(&thread_stdin, 0, &StdinHandler, 0);
 
     /* Now lets do the server stuff */
     while(true) {

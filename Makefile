@@ -9,7 +9,7 @@ AR_FLAGS = rs
 CC = g++
 CC_FLAGS = -g -Wall -I $(DIR_INCLUDE) -L $(DIR_LIB) 
 
-OBJ_LIB = ConnectHandler.o HostInfo.o
+OBJ_LIB = ConnectHandler.o HostInfo.o StdinHandler.o
 OBJ_LIB_SRC = $(DIR_SRC)/ConnectHandler.cpp \
               $(DIR_SRC)/HostInfo.cpp \
               $(DIR_SRC)/StdinHandler.cpp

@@ -1,10 +1,3 @@
-/*
- * StdinHandler.h
- *
- *  Created on: Apr 11, 2012
- *      Author: larry
- */
-
 #ifndef STDINHANDLER_H_
 #define STDINHANDLER_H_
 
@@ -20,5 +13,7 @@
 
 #include "HostInfo.h"
 
+/* Thread standard input handler */
+void* StdinHandler(void* thread_arg);
 
 #endif /* STDINHANDLER_H_ */
