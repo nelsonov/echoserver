@@ -36,7 +36,7 @@ static void print_usage (ostream& stream, const string& program_name, int exit_c
 	stream << program_name << " -p 1234 " << endl;
 	stream << program_name << " -p 1234 -a 192.168.1.1-8 " << endl;
 	stream << program_name << " -p 1234 -a 192.168.1.* " << endl;
-	stream << program_name << " -p 1234 -a 192.168.1.1,192.168.1.4,192.168.1.19 " << endl;
+	stream << program_name << " -p 1234 -a 192.168.1.1,4,19 " << endl;
 	exit (exit_code);
 }
 
@@ -193,7 +193,7 @@ int main(int argc, char** argv){
         		/* Number of bytes sent */
         		int sendcount;
         		/* Message */
-        		string data = "Server:Your IP is " + remote_ip_address + " and is not allowed to connect here. Goodbye.";
+        		string data = "Server:Your IP is " + remote_ip_address + " and is not allowed to connect here. Goodbye.\n";
         		/* Send the data back to the client */
         		if((sendcount = send(remote_sock, data.c_str(), data.size(), 0))== -1){
         			string message = "[@] Error sending data to client " + remote_ip_address;
