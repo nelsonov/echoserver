@@ -11,15 +11,15 @@ AR_FLAGS = rs
 CC = g++
 CC_FLAGS = -g -Wall -I $(DIR_INCLUDE) -L $(DIR_LIB) 
 
-OBJ_LIB = ConnectHandler.o HostInfo.o StdinHandler.o NotAllowedHandler.o
+OBJ_LIB = ConnectHandler.o HostInfo.o StdinHandler.o IPv4Parse.o
 OBJ_LIB_SRC = $(DIR_SRC)/ConnectHandler.cpp \
               $(DIR_SRC)/HostInfo.cpp \
-              $(DIR_SRC)/StdinHandler.cpp \
-              $(DIR_SRC)/NotAllowedHandler.cpp
+              $(DIR_SRC)/IPv4Parse.cpp \
+              $(DIR_SRC)/StdinHandler.cpp 
 OBJ_LIB_HDR = $(DIR_INCLUDE)/ConnectHandler.h \
               $(DIR_INCLUDE)/HostInfo.h \
-              $(DIR_INCLUDE)/StdinHandler.h \
-              $(DIR_SRC)/NotAllowedHandler.h
+              $(DIR_INCLUDE)/IPv4Parse.h \
+              $(DIR_INCLUDE)/StdinHandler.h 
 
 PROGRAM = $(DIR_BIN)/server
 OBJ_PROG = Main.o

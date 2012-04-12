@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
@@ -16,6 +17,7 @@
 
 #include "ConnectHandler.h"
 #include "StdinHandler.h"
+#include "IPv4Parse.h"
 
 using namespace std;
 
@@ -95,6 +97,9 @@ int main(int argc, char** argv){
     cout << "[%] Listening on port : " << listen_port << endl;
     cout << "[%] Set of allowed IPs : " << ip_allowed << endl;
 
+    /* Get the set of allowed IPs */
+    vector<string>* allowed_ips = ParseIP(ip_allowed);
+
     /* Local listening socket */
     int local_sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -169,16 +174,33 @@ int main(int argc, char** argv){
         	/* Print some information */
         	cout << "[#] Received connection from: " << remote_ip_address << ":" << remote_port << endl;
 
-            /* New host info structure */
-            HostInfo *host_info = new HostInfo(remote_sock, remote_ip_address, remote_port, local_ip_address, local_port);
-            /* Cast to void */
-            void* thread_arg = static_cast<void*>(host_info);
+        	/* Check if the IP is allowed to connect */
+        	vector<string>::iterator it_ip = find(allowed_ips->begin(), allowed_ips->end(), remote_ip_address);
 
-            /* Spawn thread */
-            pthread_create(&thread_id, 0, &ConnectHandler, thread_arg);
+        	/* If allowed... */
+        	if(it_ip != allowed_ips->end()) {
+				/* New host info structure */
+				HostInfo *host_info = new HostInfo(remote_sock, remote_ip_address, remote_port, local_ip_address, local_port);
+				/* Cast to void */
+				void* thread_arg = static_cast<void*>(host_info);
 
-            /* Detach thread */
-            pthread_detach(thread_id);
+				/* Spawn thread */
+				pthread_create(&thread_id, 0, &ConnectHandler, thread_arg);
+
+				/* Detach thread */
+				pthread_detach(thread_id);
+        	} /* If not... */ else {
+        		/* Number of bytes sent */
+        		int sendcount;
+        		/* Message */
+        		string data = "Server:Your IP is " + remote_ip_address + " and is not allowed to connect here. Goodbye.";
+        		/* Send the data back to the client */
+        		if((sendcount = send(remote_sock, data.c_str(), data.size(), 0))== -1){
+        			string message = "[@] Error sending data to client " + remote_ip_address;
+        			perror(message.c_str());
+        		}
+        		close(remote_sock);
+        	}
         }
         else
             perror("[@] Error accepting connection: ");
